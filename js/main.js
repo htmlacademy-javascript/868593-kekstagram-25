@@ -26,7 +26,6 @@ function getCommentFieldSize(commentField ,maxLength) {
   if (counter < maxLength) {
     return true;
   }
-  // eslint-disable-next-line no-console
   return false;
 }
 getCommentFieldSize();
