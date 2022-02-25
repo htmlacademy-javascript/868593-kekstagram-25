@@ -18,14 +18,9 @@ function getRandomNumber(min, max) {
   }
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
-getRandomNumber();
+getRandomNumber(12,15);
 
 function getCommentFieldSize(commentField ,maxLength) {
-  const string = document.querySelector(commentField);
-  const counter = string.value.length;
-  if (counter < maxLength) {
-    return true;
-  }
-  return false;
+  return commentField.length <= maxLength;
 }
-getCommentFieldSize();
+getCommentFieldSize(12,15);
