@@ -46,13 +46,11 @@ const NAMES = [
   'Люпита',
   'Вашингтон',
 ];
-const PHOTOS_COUNT = 25;
+const PHOTOS = 25;
 const MINIMAL_LIKES = 15;
 const MAXIMAL_LIKES = 200;
-const AVATAR_COUNT = 6;
-const ids = createArray(PHOTOS_COUNT);
-const imgs = createArray(PHOTOS_COUNT);
-const avatars= createArray(AVATAR_COUNT);
+const AVATARS = 5;
+const ids = createArray(PHOTOS);
 
 
 function getRandomNumber(min, max) {
@@ -114,10 +112,11 @@ function getDescription(numberDescription) {
 getDescription(DESCRIPTIONS);
 
 function getMessage(listMessage) {
-  const firstSentence = getRandomElement(listMessage);
-  const secondSentence = getRandomElement(listMessage);
-  const message = firstSentence + secondSentence;
-  return message;
+  const random = getRandomNumber(1,2) % 2;
+  if(!random){
+    return `${getRandomElement(listMessage)  } ${  getRandomElement(listMessage)}`;
+  }
+  return getRandomElement(listMessage);
 }
 
 function getName(listName) {
@@ -127,7 +126,7 @@ function getName(listName) {
 function createComment() {
   return {
     id: getRandomNumber(0,1000),
-    avatar: `img/avatar-${ getRandomNumber(0,AVATAR_COUNT) }.svg`,
+    avatar: `img/avatar-${ getRandomNumber(0,AVATARS) }.svg`,
     message: getMessage(MESSAGES),
     name: getName(NAMES),
   };
@@ -150,6 +149,6 @@ function getPhotos () {
 }
 
 // eslint-disable-next-line no-unused-vars
-const photos = Array.from({length: PHOTOS_COUNT}, getPhotos);
+const photos = Array.from({length: PHOTOS}, getPhotos);
 
 
