@@ -50,8 +50,8 @@ const PHOTOS = 25;
 const MINIMAL_LIKES = 15;
 const MAXIMAL_LIKES = 200;
 const AVATARS = 5;
-const ids = createArray(PHOTOS);
-
+const MAXIMAL_ID = 1000;
+const MAXIMAL_COMMENTS = 4;
 
 function getRandomNumber(min, max) {
   min = Math.ceil(min);
@@ -77,39 +77,36 @@ function getRandomNumber(min, max) {
 function getCommentFieldSize(commentField ,maxLength) {
   return commentField.length <= maxLength;
 }
-getCommentFieldSize(12,15);
 
 function createArray (lengthArray) {
   const array =[];
-  for (let i=1;lengthArray+1 > i; i++) {
-    const counter = i;
-    array.push(counter);
+  for (let i = 1;lengthArray + 1 > i; i++) {
+    array.push(i);
   }
   return array;
 }
 
 function getRandomElement (elements)  {
-  const elementsCopy = elements.slice();
-  return elementsCopy[getRandomNumber(0, elementsCopy.length - 1)];
+  return elements[getRandomNumber(0, elements.length - 1)];
 }
 
 function shuffle(arr){
   let j;
   let temp;
-  for(let i = arr.length - 1; i > 0; i--){
+  const arrCopy = arr.slice();
+  for(let i = arrCopy.length - 1; i > 0; i--){
     j = Math.floor(Math.random()*(i + 1));
-    temp = arr[j];
-    arr[j] = arr[i];
-    arr[i] = temp;
+    temp = arrCopy[j];
+    arrCopy[j] = arrCopy[i];
+    arrCopy[i] = temp;
   }
-  return arr;
+  return arrCopy;
 }
 
 function getDescription(numberDescription) {
   const description =  DESCRIPTIONS[numberDescription];
   return description;
 }
-getDescription(DESCRIPTIONS);
 
 function getMessage(listMessage) {
   const random = getRandomNumber(1,2) % 2;
@@ -125,30 +122,33 @@ function getName(listName) {
 
 function createComment() {
   return {
-    id: getRandomNumber(0,1000),
+    id: getRandomNumber(0,MAXIMAL_ID),
     avatar: `img/avatar-${ getRandomNumber(0,AVATARS) }.svg`,
     message: getMessage(MESSAGES),
     name: getName(NAMES),
   };
 }
-const comments = Array.from({length: getRandomNumber(0,4)}, createComment);
+
+const ids = createArray(PHOTOS);
+const comments = Array.from({length: getRandomNumber(0,MAXIMAL_COMMENTS)}, createComment);
 
 function getPhotos () {
   const randomArray = shuffle(ids);
+  const photo = [];
   for (let i = 0;i < randomArray.length;i++) {
     const id = randomArray[i];
-    const photo = {
+    photo.push( {
       id: id,
       url: `photos/${ id }.jpg`,
       description: getDescription(id),
       likes: getRandomNumber(MINIMAL_LIKES,MAXIMAL_LIKES),
       comments: comments,
-    };
-    return photo;
+    });
   }
+  return photo;
 }
 
 // eslint-disable-next-line no-unused-vars
-const photos = Array.from({length: PHOTOS}, getPhotos);
-
+const photos= getPhotos();
+getCommentFieldSize(12,15);
 
