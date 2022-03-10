@@ -55,7 +55,6 @@ const AVATARS = 5;
 const MAXIMAL_ID = 1000;
 const MAXIMAL_COMMENTS = 4;
 const ids = createArray(PHOTOS);
-const comments = Array.from({length: getRandomNumber(0,MAXIMAL_COMMENTS)}, createComment);
 
 function getPhotos () {
   const randomArray = shuffle(ids);
@@ -67,7 +66,7 @@ function getPhotos () {
       url: `photos/${ id }.jpg`,
       description: getDescription(id),
       likes: getRandomNumber(MINIMAL_LIKES,MAXIMAL_LIKES),
-      comments: comments,
+      comments: Array.from({length: getRandomNumber(0,MAXIMAL_COMMENTS)}, createComment),
     });
   }
   return photo;
