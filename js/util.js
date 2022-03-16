@@ -70,11 +70,16 @@ function getName(listName) {
 function createComment() {
   return {
     id: getRandomNumber(0,MAXIMAL_ID),
-    avatar: `img/avatar-${ getRandomNumber(0,AVATARS) }.svg`,
+    avatar: `img/avatar-${ getRandomNumber(1,AVATARS) }.svg`,
     message: getMessage(MESSAGES),
     name: getName(NAMES),
   };
 }
 
 getCommentFieldSize(12,15);
-export {getRandomNumber,createArray,getRandomElement,shuffle,getDescription,getMessage,createComment};
+
+function removeComments() {
+  const removeComment =  document.querySelector('.social__comments');
+  removeComment.innerHTML = '';
+}
+export {getRandomNumber,createArray,getRandomElement,shuffle,getDescription,getMessage,createComment,removeComments};
