@@ -1,5 +1,7 @@
 import {DESCRIPTIONS,MESSAGES,NAMES,AVATARS,MAXIMAL_ID} from './data.js';
 
+const removeComment =  document.querySelector('.social__comments');
+
 function getRandomNumber(min, max) {
   min = Math.ceil(min);
   if (min < 0) {
@@ -78,8 +80,8 @@ function createComment() {
 
 getCommentFieldSize(12,15);
 
-function removeComments() {
-  const removeComment =  document.querySelector('.social__comments');
+const removeComments = () => {
   removeComment.innerHTML = '';
-}
+};
+
 export {getRandomNumber,createArray,getRandomElement,shuffle,getDescription,getMessage,createComment,removeComments};
