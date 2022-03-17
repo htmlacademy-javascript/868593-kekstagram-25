@@ -1,5 +1,7 @@
 import {DESCRIPTIONS,MESSAGES,NAMES,AVATARS,MAXIMAL_ID} from './data.js';
 
+const removeComment =  document.querySelector('.social__comments');
+
 function getRandomNumber(min, max) {
   min = Math.ceil(min);
   if (min < 0) {
@@ -70,11 +72,16 @@ function getName(listName) {
 function createComment() {
   return {
     id: getRandomNumber(0,MAXIMAL_ID),
-    avatar: `img/avatar-${ getRandomNumber(0,AVATARS) }.svg`,
+    avatar: `img/avatar-${ getRandomNumber(1,AVATARS) }.svg`,
     message: getMessage(MESSAGES),
     name: getName(NAMES),
   };
 }
 
 getCommentFieldSize(12,15);
-export {getRandomNumber,createArray,getRandomElement,shuffle,getDescription,getMessage,createComment};
+
+const removeComments = () => {
+  removeComment.innerHTML = '';
+};
+
+export {getRandomNumber,createArray,getRandomElement,shuffle,getDescription,getMessage,createComment,removeComments};

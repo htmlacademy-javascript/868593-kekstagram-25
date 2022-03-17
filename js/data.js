@@ -51,7 +51,7 @@ const NAMES = [
 const PHOTOS = 25;
 const MINIMAL_LIKES = 15;
 const MAXIMAL_LIKES = 200;
-const AVATARS = 5;
+const AVATARS = 6;
 const MAXIMAL_ID = 1000;
 const MAXIMAL_COMMENTS = 4;
 const ids = createArray(PHOTOS);
@@ -64,7 +64,7 @@ function getPhotos () {
     photo.push( {
       id: id,
       url: `photos/${ id }.jpg`,
-      description: getDescription(id),
+      description: getDescription(id-1),
       likes: getRandomNumber(MINIMAL_LIKES,MAXIMAL_LIKES),
       comments: Array.from({length: getRandomNumber(0,MAXIMAL_COMMENTS)}, createComment),
     });
