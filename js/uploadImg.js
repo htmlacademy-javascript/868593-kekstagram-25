@@ -6,8 +6,11 @@ const popupOverlayCloseBtn = document.querySelector('.img-upload__cancel');
 const hashtagsField = document.querySelector('.text__hashtags');
 const descriptionField = document.querySelector('.text__description');
 
+const onHashTagsFieldFocus = () => document.activeElement === hashtagsField;
+const onDesriptionsFieldFocus = () => document.activeElement === descriptionField;
+
 const onPopupOverlayEscKeydown = (evt) =>  {
-  if (isEscapeKey(evt)) {
+  if (isEscapeKey(evt) && !onHashTagsFieldFocus() && !onDesriptionsFieldFocus()) {
     evt.preventDefault();
     closePopupOverlay();
   }
@@ -23,8 +26,6 @@ function closePopupOverlay () {
   document.querySelector('body').classList.remove('modal-open');
   imgUploadInput.value = '';
   document.removeEventListener('keydown', onPopupOverlayEscKeydown);
-  document.removeEventListener('focus', hashtagsField);
-  document.removeEventListener('focus', descriptionField);
 }
 
 imgUploadInput.addEventListener ('change', () => {
