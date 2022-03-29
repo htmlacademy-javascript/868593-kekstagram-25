@@ -84,4 +84,6 @@ const removeComments = () => {
   removeComment.innerHTML = '';
 };
 
-export {getRandomNumber,createArray,getRandomElement,shuffle,getDescription,getMessage,createComment,removeComments};
+const isEscapeKey = (evt) => evt.key === 'Escape';
+
+export {getRandomNumber,createArray,getRandomElement,shuffle,getDescription,getMessage,createComment,removeComments,isEscapeKey,getCommentFieldSize};
