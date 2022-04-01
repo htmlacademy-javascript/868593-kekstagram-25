@@ -39,10 +39,8 @@ function testValid() {
     hashTagsField.classList.add('error__field');
     return false;
   }
-  else {
-    hashTagsField.classList.remove('error__field');
-    return true;
-  }
+  hashTagsField.classList.remove('error__field');
+  return true;
 }
 formUploadPhoto.addEventListener('submit', (evt) => {
   if(!testValid()){
