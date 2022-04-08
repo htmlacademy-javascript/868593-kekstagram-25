@@ -1,6 +1,16 @@
-import {isEscapeKey } from './util.js';
-import { FILTERS } from './data.js';
+import {isEscapeKey} from './util.js';
+import {FILTERS} from './data.js';
+
+const MAX_ZOOM = 100;
+const MIN_ZOOM = 25;
+const STEP_ZOOM = 0.25;
+const REGEX_ZOOM = /%/;
+const REGEX_EFFECT = /effect-/;
+const REGEX_SLIDER = /[0-9]+/;
+const FILE_TYPES = ['gif', 'jpg', 'jpeg', 'png'];
+
 const imgUploadInput = document.querySelector('.img-upload__input');
+const imgOploadForm = document.querySelector('.img-upload__form');
 const popupOverlay = document.querySelector('.img-upload__overlay');
 const popupOverlayCloseBtn = document.querySelector('.img-upload__cancel');
 const hashtagsField = document.querySelector('.text__hashtags');
@@ -12,9 +22,8 @@ const preview = document.querySelector('.img-upload__preview');
 const btnZoomOut = document.querySelector('.scale__control--smaller');
 const btnZoomIn = document.querySelector('.scale__control--bigger');
 const zoomValue = document.querySelector('.scale__control--value');
-const MAX_ZOOM = 100;
-const MIN_ZOOM = 25;
-const STEP_ZOOM = 0.25;
+const fileChooser = document.querySelector('.img-upload__input[type=file]');
+
 
 const isHashTagsFieldFocus = () => document.activeElement === hashtagsField;
 
@@ -27,6 +36,13 @@ const onPopupOverlayEscKeydown = (evt) =>  {
   }
 };
 
+const formReset = () => {
+  preview.className = 'img-upload__preview';
+  descriptionField.textContent = '';
+  preview.value = '';
+  imgOploadForm.reset();
+};
+
 const zoomDefault = () => {
   zoomValue.value = '100%';
   const zoomStyle = 1;
@@ -36,6 +52,7 @@ const zoomDefault = () => {
 const openPopupOverlay  = () => {
   popupOverlay.classList.remove('hidden');
   document.querySelector('body').classList.add('modal-open');
+  sliderElement.classList.add('img-filters--inactive');
   document.addEventListener('keydown', onPopupOverlayEscKeydown);
   zoomDefault();
 };
@@ -45,6 +62,7 @@ function closePopupOverlay () {
   document.querySelector('body').classList.remove('modal-open');
   imgUploadInput.value = '';
   document.removeEventListener('keydown', onPopupOverlayEscKeydown);
+  formReset();
 }
 
 imgUploadInput.addEventListener ('change', () => {
@@ -57,8 +75,7 @@ popupOverlayCloseBtn.addEventListener('click', () => {
 
 const getZoom =  () => {
   let currentZoom = zoomValue.value;
-  const re = /%/;
-  currentZoom = currentZoom.replace(re ,'');
+  currentZoom = currentZoom.replace(REGEX_ZOOM ,'');
   return currentZoom;
 };
 
@@ -80,7 +97,6 @@ btnZoomIn.addEventListener('click', () => {
   }
 });
 
-
 noUiSlider.create(sliderElement, {
   range: {
     min:0,
@@ -89,22 +105,14 @@ noUiSlider.create(sliderElement, {
   start: 0,
   step:0,
   connect: 'lower',
-  format: {
-    to: function (value) {
-      if (Number.isInteger(value)) {
-        return value.toFixed(0);
-      }
-      return value.toFixed(1);
-    },
-    from: function (value) {
-      return parseFloat(value);
-    },
-  },
 });
 sliderElement.setAttribute('disabled', true);
 
 function getStyleEffect() {
-  const filterStyle = window.getComputedStyle(preview).filter;
+  let filterStyle = getComputedStyle(preview).filter;
+  if(filterStyle === 'invert(1)') {
+    filterStyle = 'invert(100%)';
+  }
   return filterStyle;
 }
 
@@ -114,9 +122,9 @@ function onListClick() {
     if(evt.target.nodeName  === 'INPUT') {
       preview.className = 'img-upload__preview';
       const clickEffect = evt.target.id;
-      const re = /effect-/;
-      const effect = clickEffect.replace(re ,'');
+      const effect = clickEffect.replace(REGEX_EFFECT ,'');
       if (effect !== 'none'){
+        sliderElement.classList.remove('img-filters--inactive');
         sliderElement.removeAttribute('disabled');
         preview.classList.add(FILTERS[effect].class);
         const filterOption = FILTERS[effect].filterOptions;
@@ -124,21 +132,32 @@ function onListClick() {
       }
       else {
         sliderElement.setAttribute('disabled', true);
+        sliderElement.classList.add('img-filters--inactive');
         preview.setAttribute('style', '');
       }
     }
   });
 }
+onListClick();
+
 sliderElement.noUiSlider.on('update', () => {
   preview.setAttribute('style','');
   effectLevelValue.value = sliderElement.noUiSlider.get();
   const effectStyle = getStyleEffect();
-  const re = /[0-9]+/;
-  const effectStr = effectStyle.replace(re ,effectLevelValue.value);
+  const effectStr = effectStyle.replace(REGEX_SLIDER ,effectLevelValue.value);
   if(effectStr !=='none'){
     preview.setAttribute('style',`filter:${  effectStr}`);
   }
 });
 
-onListClick();
+fileChooser.addEventListener('change', () => {
+  const file = fileChooser.files[0];
+  const fileName = file.name.toLowerCase();
+  const previewImg = preview.querySelector('img');
+  const matches = FILE_TYPES.some((it) => fileName.endsWith(it));
+  if (matches) {
+    previewImg.src = URL.createObjectURL(file);
+  }
+});
 
+export {closePopupOverlay,formReset};

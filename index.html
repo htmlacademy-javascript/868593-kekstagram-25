@@ -31,7 +31,7 @@
       <section class="img-upload">
         <div class="img-upload__wrapper">
           <h2 class="img-upload__title  visually-hidden">Загрузка фотографии</h2>
-          <form class="img-upload__form" id="upload-select-image" action="https://25.javascript.pages.academy/kekstagram"  method="post" enctype="multipart/form-data" autocomplete="off">
+          <form class="img-upload__form" id="upload-select-image" action="https://25.javascript.pages.academy/kekstagram"  method="post" enctype="multipart/form-data" autocomplete="off" accept="image/png, image/jpeg">
 
             <!-- Изначальное состояние поля для загрузки изображения -->
             <fieldset class="img-upload__start">
@@ -113,10 +113,11 @@
                     </li>
                   </ul>
                 </fieldset>
-
                 <!-- Добавление хэш-тегов и комментария к изображению -->
                 <fieldset class="img-upload__text text">
-                  <input class="text__hashtags" name="hashtags" placeholder="#ХэшТег">
+                  <div class="text__hashtags-wrapper">
+                    <input class="text__hashtags" name="hashtags" placeholder="#ХэшТег">
+                  </div>
                   <textarea class="text__description" name="description" placeholder="Ваш комментарий..." maxlength="140"> </textarea>
                 </fieldset>
 
@@ -178,6 +179,7 @@
         <button type="reset" class="big-picture__cancel  cancel" id="picture-cancel">Закрыть</button>
       </div>
     </section>
+    <div class="message__wrapper"></div>
   </main>
 
   <footer class="page-footer  container">
