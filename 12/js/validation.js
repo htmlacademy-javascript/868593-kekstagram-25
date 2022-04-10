@@ -1,5 +1,6 @@
 import {sendData} from './api.js';
-import {blockSubmitButton,unblockSubmitButton} from './util.js';
+import {blockSubmitButton,unblockSubmitButton,getSuccessMessage,getErrorMessage} from './util.js';
+import {formReset,closePopupOverlay} from './form-upload.js';
 
 const MAX_LENGTH_HASHTAG = 20;
 const MAX_QUANTITY_HASHTAGS = 5;
@@ -64,7 +65,7 @@ const pristine = new Pristine(formUploadPhoto, {
 });
 pristine.addValidator(hashTagsField, testValid,'не валидный хештег');
 
-const setUserFormSubmit = (onSuccess) => {
+const setUserFormSubmit = (onSuccess,onFail) => {
   formUploadPhoto.addEventListener('submit', (evt) => {
     evt.preventDefault();
     pristine.validate();
@@ -72,11 +73,11 @@ const setUserFormSubmit = (onSuccess) => {
       blockSubmitButton();
       sendData(
         () => {
-          onSuccess();
-          unblockSubmitButton();
+          onSuccess(unblockSubmitButton(),getSuccessMessage(),formReset());
+
         },
         () => {
-          unblockSubmitButton();
+          onFail(unblockSubmitButton(),getErrorMessage(),closePopupOverlay(),formReset());
         },
         new FormData(evt.target),
       );

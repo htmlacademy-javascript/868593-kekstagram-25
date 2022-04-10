@@ -1,4 +1,4 @@
-
+const RERENDER_DELAY = 500;
 const removeComment =  document.querySelector('.social__comments');
 const submitButton = document.querySelector('.img-upload__submit');
 const succesTamplate = document.querySelector('#success').content;
@@ -129,6 +129,14 @@ function destroyError () {
   document.removeEventListener('keydown', onErrorEscKeydown);
 }
 
+const debounce = (callback) => {
+  let timeoutId;
+  return (...rest) => {
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(() => callback.apply(this, rest), RERENDER_DELAY);
+  };
+};
+
 export {getRandomNumber,
   createArray,
   getRandomElement,
@@ -140,4 +148,5 @@ export {getRandomNumber,
   unblockSubmitButton,
   getSuccessMessage,
   getErrorMessage,
-  closeErrorMessage};
+  closeErrorMessage,
+  debounce};

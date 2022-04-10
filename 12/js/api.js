@@ -1,10 +1,8 @@
-import {setUserFormSubmit} from './validation.js';
-import {closePopupOverlay} from './form-upload.js';
-import {getSuccessMessage,getErrorMessage} from './util.js';
-import {formReset} from './form-upload.js';
+const  LINK_DOWNLOAD = 'https://25.javascript.pages.academy/kekstagram/data';
+const LINK_UPLOAD = 'https://25.javascript.pages.academy/kekstagram';
 
 const getData = (onSuccess) =>{
-  fetch('https://25.javascript.pages.academy/kekstagram/data')
+  fetch(LINK_DOWNLOAD)
     .then((response) => response.json())
     .then((data) => {
       onSuccess(data);
@@ -13,7 +11,7 @@ const getData = (onSuccess) =>{
 
 const sendData = (onSuccess, onFail, body) => {
   fetch(
-    'https://25.javascript.pages.academy/kekstagram',
+    LINK_UPLOAD,
     {
       method: 'POST',
       body,
@@ -22,20 +20,13 @@ const sendData = (onSuccess, onFail, body) => {
     .then((response) => {
       if (response.ok) {
         onSuccess();
-        getSuccessMessage();
-        formReset();
       } else {
-        getErrorMessage();
-        closePopupOverlay();
-        formReset();
+        onFail();
       }
     })
     .catch(() => {
-      onFail('Не удалось отправить форму. Попробуйте ещё раз');
+      onFail();
     });
 };
-
-setUserFormSubmit(closePopupOverlay);
-
 
 export {getData, sendData};

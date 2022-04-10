@@ -22,18 +22,37 @@ const getComment = (arr) => {
 
 const hiddenComments = (maxComment) => {
   const comments = document.querySelectorAll('.social__comment');
+  const btnCommentsDownload = document.querySelector('.comments-loader');
+  if(comments.length < maxComment){
+    btnCommentsDownload.classList.add('hidden');
+    const commentsCountShow = document.querySelector('.comments-count-show');
+    commentsCountShow.textContent = comments.length;
+    return;
+  }
   for(let i = comments.length;i > maxComment ;i--) {
     comments[i-1].classList.add('hidden');
-    const commentCount = document.querySelector('.social__comment-count');
-    commentCount.textContent = `${5 } из ${  comments.length} комментариев`
+    const commentCountMax = document.querySelector('.comments-count');
+    const commentsCountShow = document.querySelector('.comments-count-show');
+    commentsCountShow.textContent = i-1;
+    commentCountMax.textContent = comments.length;
   }
 };
-const unHiddenComments = (maxComment) => {
+const showMoreComments = (maxComment) => {
   const comments = document.querySelectorAll('.social__comment');
   for(let i = 0;i < maxComment ;i++) {
+    if(i===maxComment) {
+      return;
+    }
+    if(i===comments.length) {
+      const btnCommentsDownload = document.querySelector('.comments-loader');
+      btnCommentsDownload.classList.add('hidden');
+      return;
+    }
     comments[i].classList.remove('hidden');
-    const commentCount = document.querySelector('.social__comment-count');
-    commentCount.textContent = `${i+1 } из ${  comments.length} комментариев` ;
+    const commentCountMax = document.querySelector('.comments-count');
+    const commentsCountShow = document.querySelector('.comments-count-show');
+    commentsCountShow.textContent = i+1;
+    commentCountMax.textContent = comments.length;
   }
 };
 
@@ -41,7 +60,8 @@ const getMoreComments = () => {
   const btnCommentsDownload = document.querySelector('.comments-loader');
   btnCommentsDownload.addEventListener('click', () => {
     maxComments = maxComments+5;
-    unHiddenComments(maxComments);
+    showMoreComments(maxComments);
+    return maxComments;
   });
 };
 
@@ -57,11 +77,17 @@ const btnClose = () => {
 };
 
 function closePopup() {
+  const btnCommentsDownload = document.querySelector('.comments-loader');
   fullSizePicture.classList.add('hidden');
   document.querySelector('body').classList.remove('modal-open');
   document.removeEventListener('click', btnClose);
   document.removeEventListener('keydown', onPopupEscKeydown);
   removeComments();
+  const comments = document.querySelectorAll('.social__comment');
+  comments.innerHTMl = '';
+  maxComments = 5;
+  btnCommentsDownload.classList.remove('hidden');
+  return maxComments;
 }
 
 function openPopup(clickTarget,photos) {
@@ -71,6 +97,7 @@ function openPopup(clickTarget,photos) {
   const imglikes = imgId.likes;
   const imgCommentsLength = imgId.comments.length;
   const imgDescription = imgId.description;
+
   fullSizePicture.querySelector('img').src = imgUrl;
   fullSizePicture.querySelector('.likes-count').textContent = imglikes;
   fullSizePicture.querySelector('.comments-count').textContent = imgCommentsLength;

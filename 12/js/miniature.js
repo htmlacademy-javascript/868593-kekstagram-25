@@ -1,5 +1,5 @@
 import {getData} from './api.js';
-import {shuffle} from './util.js';
+import {shuffle,debounce} from './util.js';
 
 const MIN_PHOTO = 1;
 const MAX_PHOTO = 11;
@@ -22,6 +22,20 @@ const renderPhoto = (data) => {
     photosListFragment.appendChild(photoElement);
   });
   img.appendChild(photosListFragment);
+};
+
+const deleteImg = () => {
+  const imgs = img.querySelectorAll('.picture');
+  imgs.innerHTML ='';
+  imgs.forEach((elem)=> {
+    elem.parentNode.removeChild(elem);
+  });
+};
+const deleteActiveClass = () => {
+  const btnfilter = document.querySelectorAll('.img-filters__button');
+  btnfilter.forEach((elem)=> {
+    elem.classList.remove('img-filters__button--active');
+  });
 };
 
 const sortDefault = () => {
@@ -55,37 +69,24 @@ const sortPopularImg = () => {
   });
 };
 
-const deleteImg = () => {
-  const imgs = document.querySelectorAll('.picture');
-  imgs.forEach((elem)=> {
-    elem.parentNode.removeChild(elem);
-  });
-};
-const deleteActiveClass = () => {
-  const btnfilter = document.querySelectorAll('.img-filters__button');
-  btnfilter.forEach((elem)=> {
-    elem.classList.remove('img-filters__button--active');
-  });
-};
-
-btnFilterDefault.addEventListener('click', () => {
+btnFilterDefault.addEventListener('click', debounce (() => {
   deleteActiveClass();
   deleteImg();
   sortDefault();
   btnFilterDefault.classList.add('img-filters__button--active');
-});
+}));
 
-btnFilterRandom.addEventListener('click', () => {
+btnFilterRandom.addEventListener('click', debounce (() => {
   deleteActiveClass();
   deleteImg();
   sortTenRandomImg();
   btnFilterRandom.classList.add('img-filters__button--active');
-});
+}));
 
-btnFilterDiscussed.addEventListener('click', () => {
+btnFilterDiscussed.addEventListener('click', debounce (() => {
   deleteActiveClass();
   deleteImg();
   sortPopularImg();
   btnFilterDiscussed.classList.add('img-filters__button--active');
-});
+}));
 export {renderPhoto};
