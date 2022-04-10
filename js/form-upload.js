@@ -1,5 +1,6 @@
 import {isEscapeKey} from './util.js';
 import {FILTERS} from './data.js';
+import {setUserFormSubmit} from './validation.js';
 
 const MAX_ZOOM = 100;
 const MIN_ZOOM = 25;
@@ -159,5 +160,7 @@ fileChooser.addEventListener('change', () => {
     previewImg.src = URL.createObjectURL(file);
   }
 });
+
+setUserFormSubmit(closePopupOverlay);
 
 export {closePopupOverlay,formReset};
