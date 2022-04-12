@@ -32,8 +32,8 @@ const deleteImg = () => {
   });
 };
 const deleteActiveClass = () => {
-  const btnfilter = document.querySelectorAll('.img-filters__button');
-  btnfilter.forEach((elem)=> {
+  const btnFilters = document.querySelectorAll('.img-filters__button');
+  btnFilters.forEach((elem)=> {
     elem.classList.remove('img-filters__button--active');
   });
 };
@@ -89,4 +89,5 @@ btnFilterDiscussed.addEventListener('click', debounce (() => {
   sortPopularImg();
   btnFilterDiscussed.classList.add('img-filters__button--active');
 }));
+
 export {renderPhoto};
