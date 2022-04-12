@@ -9,8 +9,7 @@ const REGEX_HASHTAG = /^#[A-Za-zА-Яа-яЁё0-9]{1,19}$/;
 const formUploadPhoto = document.querySelector('.img-upload__form');
 const hashTagsField = document.querySelector('.text__hashtags');
 
-
-const hashTagFieldEmpty = () => {
+const checkHashTagFieldEmpty = () => {
   if(hashTagsField.value ==='') {
     return true;
   }
@@ -22,16 +21,16 @@ function getHashTags() {
   return hashTag;
 }
 
-function validCountHashTags(arr ,maxCount) {
+function validateCountHashTags(arr ,maxCount) {
   return arr.length <= maxCount;
 }
 
-function validHashTagsElementLength(arr) {
+function validateHashTagsElementLength(arr) {
   const arrLength = arr.map((a) => a.length);
   return arrLength.some((x) => x < MAX_LENGTH_HASHTAG);
 }
 
-function validHashTagsRegex(arr) {
+function validateHashTagsRegex(arr) {
   for (let i = 0; i < arr.length; i++) {
     if (!REGEX_HASHTAG.test(arr[i])) {
       return false;
@@ -45,9 +44,9 @@ function validHashTagsDubllicate(array) {
   return uniqueHashTags.length === array.length;
 }
 
-function testValid() {
+function testValidate() {
   const hashTags = getHashTags();
-  if (validCountHashTags(hashTags,MAX_QUANTITY_HASHTAGS) && validHashTagsRegex(hashTags) && validHashTagsDubllicate(hashTags) && validHashTagsElementLength(hashTags) || hashTagFieldEmpty()) {
+  if (validateCountHashTags(hashTags,MAX_QUANTITY_HASHTAGS) && validateHashTagsRegex(hashTags) && validHashTagsDubllicate(hashTags) && validateHashTagsElementLength(hashTags) || checkHashTagFieldEmpty()) {
     hashTagsField.classList.remove('error__field');
     return true;
   }
@@ -63,9 +62,8 @@ const pristine = new Pristine(formUploadPhoto, {
   errorTextTag: 'span',
   errorTextClass: 'form__error'
 });
-pristine.addValidator(hashTagsField, testValid,'не валидный хештег');
 
-const setUserFormSubmit = (onSuccess,onFail) => {
+const setUserFormSubmit = () => {
   formUploadPhoto.addEventListener('submit', (evt) => {
     evt.preventDefault();
     pristine.validate();
@@ -73,17 +71,24 @@ const setUserFormSubmit = (onSuccess,onFail) => {
       blockSubmitButton();
       sendData(
         () => {
-          onSuccess(unblockSubmitButton(),getSuccessMessage(),formReset());
-
+          unblockSubmitButton();
+          closePopupOverlay();
+          getSuccessMessage();
+          formReset();
         },
         () => {
-          onFail(unblockSubmitButton(),getErrorMessage(),closePopupOverlay(),formReset());
+          unblockSubmitButton();
+          getErrorMessage();
+          closePopupOverlay();
+          formReset();
         },
         new FormData(evt.target),
       );
     }
   });
 };
+setUserFormSubmit();
 
+pristine.addValidator(hashTagsField, testValidate,'не валидный хештег');
 export{setUserFormSubmit};
 

@@ -5,37 +5,6 @@ const succesTamplate = document.querySelector('#success').content;
 const messageWrapper = document.querySelector('.message__wrapper');
 const errorTamplate = document.querySelector('#error').content;
 
-function getRandomNumber(min, max) {
-  min = Math.ceil(min);
-  if (min < 0) {
-    return;
-  }
-  max = Math.floor(max);
-  if (max < 0) {
-    return;
-  }
-  if (min > max) {
-    return;
-  }
-  return Math.floor(Math.random() * (max - min + 1)) + min;
-}
-
-function getCommentFieldSize(commentField ,maxLength) {
-  return commentField.length <= maxLength;
-}
-
-function createArray (lengthArray) {
-  const array =[];
-  for (let i = 1;lengthArray + 1 > i; i++) {
-    array.push(i);
-  }
-  return array;
-}
-
-function getRandomElement (elements)  {
-  return elements[getRandomNumber(0, elements.length - 1)];
-}
-
 function shuffle(arr){
   let j;
   let temp;
@@ -137,13 +106,9 @@ const debounce = (callback) => {
   };
 };
 
-export {getRandomNumber,
-  createArray,
-  getRandomElement,
-  shuffle,
+export {shuffle,
   removeComments,
   isEscapeKey,
-  getCommentFieldSize,
   blockSubmitButton,
   unblockSubmitButton,
   getSuccessMessage,

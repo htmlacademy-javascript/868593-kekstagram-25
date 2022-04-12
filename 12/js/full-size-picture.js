@@ -1,67 +1,92 @@
 import {removeComments,isEscapeKey} from './util.js';
 import {getData} from './api.js';
 
+const STEP_DOWNLOAD_COMMENTS = 5;
+
 const fullSizePicture = document.querySelector('.big-picture');
 const pictureCollection = document.querySelector('.pictures');
-const commentsTemplate = document.querySelector('#comments').content;
 const commentListFragment = document.createDocumentFragment();
 const closeButton = document.querySelector('.big-picture__cancel');
-let maxComments = 5;
+let maxComments = 4;
+let countViewComments;
 
-const getComment = (arr) => {
-  arr.comments.forEach(({avatar,name,message}) =>{
-    const commentList = document.querySelector('.social__comments');
-    const commentListCopy = commentsTemplate.cloneNode(true);
-    commentListCopy.querySelector('.social__picture').src = avatar;
-    commentListCopy.querySelector('.social__picture').alt = name;
-    commentListCopy.querySelector('.social__text').textContent = message;
-    commentListFragment.appendChild(commentListCopy);
-    commentList.appendChild(commentListFragment);
-  });
+
+const createBtnDownloadComments = () => {
+  let btnCommentsDownload = document.querySelector('.comments-loader');
+  const btnCommentsDownloadWrapper = document.querySelector('.social__comments-loader-wrapper');
+  btnCommentsDownload = document.createElement('button');
+  btnCommentsDownload.classList.add('social__comments-loader');
+  btnCommentsDownload.classList.add('comments-loader');
+  btnCommentsDownload.textContent = 'Загрузить еще';
+  btnCommentsDownloadWrapper.append(btnCommentsDownload);
 };
 
-const hiddenComments = (maxComment) => {
-  const comments = document.querySelectorAll('.social__comment');
+const destroyBtnDownloadComments = () => {
   const btnCommentsDownload = document.querySelector('.comments-loader');
-  if(comments.length < maxComment){
-    btnCommentsDownload.classList.add('hidden');
-    const commentsCountShow = document.querySelector('.comments-count-show');
-    commentsCountShow.textContent = comments.length;
-    return;
-  }
-  for(let i = comments.length;i > maxComment ;i--) {
-    comments[i-1].classList.add('hidden');
-    const commentCountMax = document.querySelector('.comments-count');
-    const commentsCountShow = document.querySelector('.comments-count-show');
-    commentsCountShow.textContent = i-1;
-    commentCountMax.textContent = comments.length;
-  }
+  btnCommentsDownload.remove();
 };
-const showMoreComments = (maxComment) => {
-  const comments = document.querySelectorAll('.social__comment');
-  for(let i = 0;i < maxComment ;i++) {
-    if(i===maxComment) {
-      return;
-    }
-    if(i===comments.length) {
-      const btnCommentsDownload = document.querySelector('.comments-loader');
-      btnCommentsDownload.classList.add('hidden');
-      return;
-    }
-    comments[i].classList.remove('hidden');
-    const commentCountMax = document.querySelector('.comments-count');
-    const commentsCountShow = document.querySelector('.comments-count-show');
-    commentsCountShow.textContent = i+1;
-    commentCountMax.textContent = comments.length;
+
+const createCommentElement = (comment) => {
+  const commentElement = document.createElement('li');
+  const commentAvatar = document.createElement('img');
+  const commentText = document.createElement('p');
+  commentElement.classList.add('social__comment');
+  commentAvatar.classList.add('social__picture');
+  commentText.classList.add('social__text');
+  commentAvatar.src = comment.avatar;
+  commentAvatar.alt = comment.name;
+  commentText.textContent = comment.message;
+  commentElement.append(commentAvatar);
+  commentElement.append(commentText);
+  return commentElement;
+};
+
+const createCommentList = (comment,min,max) => {
+  createBtnDownloadComments();
+  const commentCountMax = document.querySelector('.comments-count');
+  const commentsCountShow = document.querySelector('.comments-count-show');
+  const btnCommentsDownload = document.querySelector('.comments-loader');
+  if(max > comment.comments.length) {
+    max = comment.comments.length;
+    btnCommentsDownload.classList.add('hidden');
+    commentsCountShow.textContent = max;
+    commentCountMax.textContent = comment.comments.length;
+  }
+  const commentList = document.querySelector('.social__comments');
+  for(let i = min;i < max ;i++){
+    const commentItem = createCommentElement(comment.comments[i]);
+    commentListFragment.appendChild(commentItem);
+    countViewComments = i;
+    commentsCountShow.textContent = max;
+    commentCountMax.textContent = comment.comments.length;
+  }
+  commentList.appendChild(commentListFragment);
+  return countViewComments;
+};
+
+const checkLengthComments = (comment) => {
+  countViewComments = countViewComments +1;
+  const commentsCountShow = document.querySelector('.comments-count-show');
+  if(comment.comments.length > countViewComments + STEP_DOWNLOAD_COMMENTS) {
+    maxComments = countViewComments + STEP_DOWNLOAD_COMMENTS;
+    createCommentList(comment,countViewComments,maxComments);
+    commentsCountShow.textContent = maxComments;
+    return countViewComments;
+  }
+  else {
+    const restComments = comment.comments.length - countViewComments;
+    maxComments = countViewComments + restComments;
+    createCommentList(comment,countViewComments,maxComments);
+    const btnCommentsDownload = document.querySelector('.comments-loader');
+    btnCommentsDownload.classList.add('hidden');
+    commentsCountShow.textContent = maxComments;
   }
 };
 
-const getMoreComments = () => {
+const getMoreComments = (comment) => {
   const btnCommentsDownload = document.querySelector('.comments-loader');
   btnCommentsDownload.addEventListener('click', () => {
-    maxComments = maxComments+5;
-    showMoreComments(maxComments);
-    return maxComments;
+    checkLengthComments(comment);
   });
 };
 
@@ -72,46 +97,45 @@ const onPopupEscKeydown = (evt) =>  {
   }
 };
 
-const btnClose = () => {
+const onBtnClose = () => {
   closePopup();
 };
 
 function closePopup() {
-  const btnCommentsDownload = document.querySelector('.comments-loader');
   fullSizePicture.classList.add('hidden');
   document.querySelector('body').classList.remove('modal-open');
-  document.removeEventListener('click', btnClose);
+  document.removeEventListener('click', onBtnClose);
   document.removeEventListener('keydown', onPopupEscKeydown);
+  document.removeEventListener('click', checkLengthComments);
   removeComments();
   const comments = document.querySelectorAll('.social__comment');
   comments.innerHTMl = '';
-  maxComments = 5;
-  btnCommentsDownload.classList.remove('hidden');
-  return maxComments;
+  countViewComments = STEP_DOWNLOAD_COMMENTS-1;
+  destroyBtnDownloadComments();
+  return countViewComments;
 }
 
-function openPopup(clickTarget,photos) {
+const openPopup = (clickTarget,photos) => {
   const clickTargetNumber = Number(clickTarget);
   const imgId = photos.find((item) => item.id === clickTargetNumber);
   const imgUrl = imgId.url;
   const imglikes = imgId.likes;
   const imgCommentsLength = imgId.comments.length;
   const imgDescription = imgId.description;
-
   fullSizePicture.querySelector('img').src = imgUrl;
   fullSizePicture.querySelector('.likes-count').textContent = imglikes;
   fullSizePicture.querySelector('.comments-count').textContent = imgCommentsLength;
   fullSizePicture.querySelector('.social__caption').textContent = imgDescription;
   fullSizePicture.classList.remove('hidden');
+  destroyBtnDownloadComments();
   document.querySelector('body').classList.add('modal-open');
-  getComment(imgId);
-  hiddenComments(maxComments);
-  getMoreComments();
+  createCommentList(imgId,0,STEP_DOWNLOAD_COMMENTS);
+  getMoreComments(imgId);
   document.addEventListener('keydown', onPopupEscKeydown);
-  closeButton.addEventListener('click', btnClose);
-}
+  closeButton.addEventListener('click', onBtnClose);
+};
 
-function getFullSizePhoto() {
+const getFullSizePhoto = () => {
   removeComments();
   pictureCollection.addEventListener('click', (evt) => {
     if (evt.target.className === 'picture__img') {
@@ -121,6 +145,7 @@ function getFullSizePhoto() {
       });
     }
   });
-}
+};
 
 getFullSizePhoto();
+
