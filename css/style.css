@@ -1204,7 +1204,11 @@ main {
 /**
  * Экраны ошибки и успеха загрузки изображения
  */
-
+.pristine-error {
+  display: block;
+  color: red;
+  text-transform: uppercase;
+}
 .error,
 .success {
   position: fixed;

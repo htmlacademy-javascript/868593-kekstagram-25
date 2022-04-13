@@ -1,4 +1,5 @@
 import './miniature.js';
-import './fullSizePicture.js';
-import './uploadImg.js';
+import './form-upload.js';
+import './full-size-picture.js';
 import './validation.js';
+import './api.js';
