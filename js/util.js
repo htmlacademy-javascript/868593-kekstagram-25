@@ -1,4 +1,5 @@
 const RERENDER_DELAY = 500;
+const TIME_SHOW_ERROR = 3000;
 
 const removeComment =  document.querySelector('.social__comments');
 const submitButton = document.querySelector('.img-upload__submit');
@@ -6,17 +7,17 @@ const succesTamplate = document.querySelector('#success').content;
 const messageWrapper = document.querySelector('.message__wrapper');
 const errorTamplate = document.querySelector('#error').content;
 
-const shuffle = (arr) => {
+const shuffle = (data) => {
   let j;
   let temp;
-  const arrCopy = arr.slice();
-  for(let i = arrCopy.length - 1; i > 0; i--){
+  const dataCopy = data.slice();
+  for(let i = dataCopy.length - 1; i > 0; i--){
     j = Math.floor(Math.random()*(i + 1));
-    temp = arrCopy[j];
-    arrCopy[j] = arrCopy[i];
-    arrCopy[i] = temp;
+    temp = dataCopy[j];
+    dataCopy[j] = dataCopy[i];
+    dataCopy[i] = temp;
   }
-  return arrCopy;
+  return dataCopy;
 };
 
 const removeComments = () => {
@@ -109,7 +110,15 @@ const debounce = (callback) => {
   };
 };
 
-export {shuffle,
+const getDownloadMessageError = () => {
+  const errorMessage = document.createElement('div');
+  errorMessage.classList.add('download__error');
+  errorMessage.textContent = 'Ошибка загрузки';
+  messageWrapper.append(errorMessage);
+  setTimeout(() => errorMessage.remove(), TIME_SHOW_ERROR);
+};
+
+export { shuffle,
   removeComments,
   isEscapeKey,
   blockSubmitButton,
@@ -117,4 +126,5 @@ export {shuffle,
   getSuccessMessage,
   getErrorMessage,
   closeErrorMessage,
-  debounce};
+  debounce,
+  getDownloadMessageError };

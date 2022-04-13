@@ -1,4 +1,4 @@
-const filters ={
+const filters = {
   'chrome': {
     class: 'effects__preview--chrome',
     filterOptions:{
@@ -67,4 +67,4 @@ const filters ={
   }
 };
 
-export {filters};
+export { filters };

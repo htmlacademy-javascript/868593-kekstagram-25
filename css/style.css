@@ -1225,6 +1225,25 @@ main {
   background-color: rgba(0, 0, 0, 0.8);
 }
 
+.download__error {
+  margin: auto;
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  padding-top: 40px;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0.8);
+  font-family: "Open Sans", "Arial", sans-serif;
+  width:  250px;
+  height: 100px;
+  text-align: center;
+  font-weight: 700;
+  font-size: 20px;
+  color: #ffe753;
+}
+
 .error__inner,
 .success__inner {
   position: relative;
