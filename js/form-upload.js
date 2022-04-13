@@ -1,5 +1,5 @@
-import {isEscapeKey} from './util.js';
-import {filters} from './data.js';
+import { isEscapeKey } from './util.js';
+import { filters } from './data.js';
 
 const MAX_ZOOM = 100;
 const MIN_ZOOM = 25;
@@ -28,17 +28,17 @@ const isHashTagsFieldFocus = () => document.activeElement === hashtagsField;
 
 const isDesriptionsFieldFocus = () => document.activeElement === descriptionField;
 
-const formReset = () => {
+const resetForm = () => {
   preview.className = 'img-upload__preview';
   descriptionField.textContent = '';
   preview.value = '';
   imgOploadForm.reset();
 };
 
-const zoomDefault = () => {
+const resetZoom = () => {
   zoomValue.value = '100%';
   const zoomStyle = 1;
-  preview.setAttribute('style',`transform:scale(${  zoomStyle  })`);
+  preview.setAttribute('style', `transform:scale(${  zoomStyle  })`);
 };
 
 const openPopupOverlay  = () => {
@@ -46,7 +46,7 @@ const openPopupOverlay  = () => {
   document.body.classList.add('modal-open');
   sliderElement.classList.add('img-filters--inactive');
   document.addEventListener('keydown', onPopupOverlayEscKeydown);
-  zoomDefault();
+  resetZoom();
 };
 
 const closePopupOverlay = () => {
@@ -54,7 +54,7 @@ const closePopupOverlay = () => {
   document.body.classList.remove('modal-open');
   imgUploadInput.value = '';
   document.removeEventListener('keydown', onPopupOverlayEscKeydown);
-  formReset();
+  resetForm();
 };
 
 function onPopupOverlayEscKeydown(evt) {
@@ -66,7 +66,7 @@ function onPopupOverlayEscKeydown(evt) {
 
 const getZoom =  () => {
   let currentZoom = zoomValue.value;
-  currentZoom = currentZoom.replace(REGEX_ZOOM ,'');
+  currentZoom = currentZoom.replace(REGEX_ZOOM, '');
   return currentZoom;
 };
 
@@ -91,7 +91,7 @@ btnZoomOut.addEventListener('click', () => {
   if(currentZoom > MIN_ZOOM) {
     currentZoom = currentZoom /MAX_ZOOM - STEP_ZOOM;
     zoomValue.value = `${currentZoom * MAX_ZOOM}%`;
-    preview.setAttribute('style',`transform:scale(${  currentZoom  })`);
+    preview.setAttribute('style', `transform:scale(${  currentZoom  })`);
   }
 });
 
@@ -116,11 +116,11 @@ noUiSlider.create(sliderElement, {
 sliderElement.setAttribute('disabled', true);
 
 effectList.addEventListener('click', (evt)=>{
-  zoomDefault();
+  resetZoom();
   if(evt.target.nodeName  === 'INPUT') {
     preview.className = 'img-upload__preview';
     const clickEffect = evt.target.id;
-    const effect = clickEffect.replace(REGEX_EFFECT ,'');
+    const effect = clickEffect.replace(REGEX_EFFECT, '');
     if (effect !== 'none'){
       sliderElement.classList.remove('img-filters--inactive');
       sliderElement.removeAttribute('disabled');
@@ -137,12 +137,12 @@ effectList.addEventListener('click', (evt)=>{
 });
 
 sliderElement.noUiSlider.on('update', () => {
-  preview.setAttribute('style','');
+  preview.setAttribute('style', '');
   effectLevelValue.value = sliderElement.noUiSlider.get();
   const effectStyle = getStyleEffect();
-  const effectStr = effectStyle.replace(REGEX_SLIDER ,effectLevelValue.value);
+  const effectStr = effectStyle.replace(REGEX_SLIDER, effectLevelValue.value);
   if(effectStr !=='none'){
-    preview.setAttribute('style',`filter:${  effectStr}`);
+    preview.setAttribute('style', `filter:${  effectStr}`);
   }
 });
 
@@ -156,4 +156,4 @@ fileChooser.addEventListener('change', () => {
   }
 });
 
-export {closePopupOverlay,formReset};
+export { closePopupOverlay,resetForm };

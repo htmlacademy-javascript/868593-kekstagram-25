@@ -1,6 +1,6 @@
-import {sendData} from './api.js';
-import {blockSubmitButton,unblockSubmitButton,getSuccessMessage,getErrorMessage} from './util.js';
-import {formReset,closePopupOverlay} from './form-upload.js';
+import { sendData } from './api.js';
+import { blockSubmitButton, unblockSubmitButton, getSuccessMessage, getErrorMessage } from './util.js';
+import {resetForm, closePopupOverlay} from './form-upload.js';
 
 const MAX_LENGTH_HASHTAG = 20;
 const MAX_QUANTITY_HASHTAGS = 5;
@@ -21,30 +21,30 @@ const getHashTags = () => {
   return hashTag;
 };
 
-const validateCountHashTags = (arr, maxCount) => arr.length <= maxCount;
+const validateCountHashTags = (data, maxCount) => data.length <= maxCount;
 
-const validateHashTagsElementLength = (arr) => {
-  const arrLength = arr.map((a) => a.length);
+const validateHashTagsElementLength = (data) => {
+  const arrLength = data.map((a) => a.length);
   return arrLength.some((x) => x < MAX_LENGTH_HASHTAG);
 };
 
-const validateHashTagsRegex = (arr) => {
-  for (let i = 0; i < arr.length; i++) {
-    if (!REGEX_HASHTAG.test(arr[i])) {
+const validateHashTagsRegex = (data) => {
+  for (let i = 0; i < data.length; i++) {
+    if (!REGEX_HASHTAG.test(data[i])) {
       return false;
     }
   }
   return true;
 };
 
-const validHashTagsDubllicate = (array) => {
-  const uniqueHashTags = array.filter((val, ind, arr) => arr.indexOf(val) === ind);
-  return uniqueHashTags.length === array.length;
+const validateHashTagsDubllicate = (data) => {
+  const uniqueHashTags = data.filter((val, ind, arr) => arr.indexOf(val) === ind);
+  return uniqueHashTags.length === data.length;
 };
 
 const testValidate = () => {
   const hashTags = getHashTags();
-  if (validateCountHashTags(hashTags, MAX_QUANTITY_HASHTAGS) && validateHashTagsRegex(hashTags) && validHashTagsDubllicate(hashTags) && validateHashTagsElementLength(hashTags) || checkHashTagFieldEmpty()) {
+  if (validateCountHashTags(hashTags, MAX_QUANTITY_HASHTAGS) && validateHashTagsRegex(hashTags) && validateHashTagsDubllicate(hashTags) && validateHashTagsElementLength(hashTags) || checkHashTagFieldEmpty()) {
     hashTagsField.classList.remove('error__field');
     return true;
   }
@@ -72,13 +72,13 @@ const setUserFormSubmit = () => {
           unblockSubmitButton();
           closePopupOverlay();
           getSuccessMessage();
-          formReset();
+          resetForm();
         },
         () => {
           unblockSubmitButton();
           getErrorMessage();
           closePopupOverlay();
-          formReset();
+          resetForm();
         },
         new FormData(evt.target),
       );
@@ -87,7 +87,7 @@ const setUserFormSubmit = () => {
 };
 setUserFormSubmit();
 
-pristine.addValidator(hashTagsField, testValidate,'не валидный хештег');
+pristine.addValidator(hashTagsField, testValidate, 'не валидный хештег');
 
 export{setUserFormSubmit};
 

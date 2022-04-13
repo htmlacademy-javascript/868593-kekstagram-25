@@ -1,5 +1,5 @@
-import {getData} from './api.js';
-import {shuffle,debounce} from './util.js';
+import { getData } from './api.js';
+import { shuffle, debounce } from './util.js';
 
 const MIN_PHOTO = 1;
 const MAX_PHOTO = 11;
@@ -16,20 +16,20 @@ const btnFilterDiscussed = document.querySelector('#filter-discussed');
 const deleteImg = () => {
   const imgs = img.querySelectorAll('.picture');
   imgs.innerHTML ='';
-  imgs.forEach((elem)=> {
+  imgs.forEach((elem) => {
     elem.parentNode.removeChild(elem);
   });
 };
 
 const deleteActiveClass = () => {
   const btnFilters = document.querySelectorAll('.img-filters__button');
-  btnFilters.forEach((elem)=> {
+  btnFilters.forEach((elem) => {
     elem.classList.remove('img-filters__button--active');
   });
 };
 
 const renderPhoto = (data) => {
-  data.forEach(({url,likes,comments,id}) => {
+  data.forEach(({url, likes, comments, id}) => {
     const photoElement = photosTemplate.cloneNode(true);
     photoElement.querySelector('.picture__img').src = url;
     photoElement.querySelector('.picture__likes').textContent = likes;
@@ -47,7 +47,7 @@ const sortDefault = () => {
 sortDefault();
 
 const sortTenRandomImg = () => {
-  renderPhoto(shuffle(photos.slice([MIN_PHOTO],[MAX_PHOTO])));
+  renderPhoto(shuffle(photos.slice([MIN_PHOTO], [MAX_PHOTO])));
   imgFilter.classList.remove('img-filters--inactive');
 };
 
@@ -93,4 +93,4 @@ getData((data) => {
   return photos;
 });
 
-export {photos};
+export { photos };

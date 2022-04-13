@@ -1,5 +1,5 @@
-import {removeComments,isEscapeKey} from './util.js';
-import {photos} from './miniature.js';
+import { removeComments,isEscapeKey } from './util.js';
+import { photos } from './miniature.js';
 
 const STEP_DOWNLOAD_COMMENTS = 5;
 
@@ -44,7 +44,7 @@ const createCommentElement = (comment) => {
   return commentElement;
 };
 
-const createCommentList = (comment,min,max) => {
+const createCommentList = (comment, min, max) => {
   createBtnDownloadComments();
   const commentCountMax = document.querySelector('.comments-count');
   const commentsCountShow = document.querySelector('.comments-count-show');
@@ -71,13 +71,13 @@ const checkLengthComments = (comment) => {
   const commentsCountShow = document.querySelector('.comments-count-show');
   if(comment.comments.length > countViewComments + STEP_DOWNLOAD_COMMENTS) {
     maxComments = countViewComments + STEP_DOWNLOAD_COMMENTS;
-    createCommentList(comment,countViewComments,maxComments);
+    createCommentList(comment, countViewComments, maxComments);
     commentsCountShow.textContent = maxComments;
     return countViewComments;
   }
   const restComments = comment.comments.length - countViewComments;
   maxComments = countViewComments + restComments;
-  createCommentList(comment,countViewComments,maxComments);
+  createCommentList(comment, countViewComments, maxComments);
   btnCommentsDownload.classList.add('hidden');
   commentsCountShow.textContent = maxComments;
 };
@@ -114,9 +114,9 @@ function closePopup() {
   return countViewComments;
 }
 
-const openPopup = (clickTarget,arr) => {
+const openPopup = (clickTarget, data) => {
   const clickTargetNumber = Number(clickTarget);
-  const imgId = arr.find((item) => item.id === clickTargetNumber);
+  const imgId = data.find((item) => item.id === clickTargetNumber);
   const imgUrl = imgId.url;
   const imglikes = imgId.likes;
   const imgCommentsLength = imgId.comments.length;
@@ -139,7 +139,7 @@ const getFullSizePhoto = () => {
   pictureCollection.addEventListener('click', (evt) => {
     if (evt.target.className === 'picture__img') {
       const clickTarget = evt.target.dataset.indexNumber;
-      openPopup(clickTarget,photos);
+      openPopup(clickTarget, photos);
     }
   });
 };
