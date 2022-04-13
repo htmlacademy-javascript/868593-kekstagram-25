@@ -1,11 +1,12 @@
 const RERENDER_DELAY = 500;
+
 const removeComment =  document.querySelector('.social__comments');
 const submitButton = document.querySelector('.img-upload__submit');
 const succesTamplate = document.querySelector('#success').content;
 const messageWrapper = document.querySelector('.message__wrapper');
 const errorTamplate = document.querySelector('#error').content;
 
-function shuffle(arr){
+const shuffle = (arr) => {
   let j;
   let temp;
   const arrCopy = arr.slice();
@@ -16,7 +17,7 @@ function shuffle(arr){
     arrCopy[i] = temp;
   }
   return arrCopy;
-}
+};
 
 const removeComments = () => {
   removeComment.innerHTML = '';
@@ -33,7 +34,6 @@ const unblockSubmitButton = () => {
   submitButton.disabled = false;
   submitButton.textContent = 'Опубликовать';
 };
-
 
 const closeSuccessMessage = () => {
   const successClass = document.querySelector('.success');
@@ -60,6 +60,7 @@ const closeErrorMessage = () => {
     destroyError();
   });
 };
+
 const onSuccessEscKeydown = (evt) =>  {
   if (isEscapeKey(evt)) {
     evt.preventDefault();
@@ -87,11 +88,13 @@ const getErrorMessage = () => {
   closeErrorMessage();
   document.addEventListener('keydown', onErrorEscKeydown);
 };
+
 function destroySuccess () {
   const successClass = document.querySelector('.success');
   successClass.remove();
   document.removeEventListener('keydown', onSuccessEscKeydown);
 }
+
 function destroyError () {
   const errorClass = document.querySelector('.error');
   errorClass.remove();

@@ -1,5 +1,5 @@
 import {removeComments,isEscapeKey} from './util.js';
-import {getData} from './api.js';
+import {photos} from './miniature.js';
 
 const STEP_DOWNLOAD_COMMENTS = 5;
 
@@ -75,13 +75,11 @@ const checkLengthComments = (comment) => {
     commentsCountShow.textContent = maxComments;
     return countViewComments;
   }
-  else {
-    const restComments = comment.comments.length - countViewComments;
-    maxComments = countViewComments + restComments;
-    createCommentList(comment,countViewComments,maxComments);
-    btnCommentsDownload.classList.add('hidden');
-    commentsCountShow.textContent = maxComments;
-  }
+  const restComments = comment.comments.length - countViewComments;
+  maxComments = countViewComments + restComments;
+  createCommentList(comment,countViewComments,maxComments);
+  btnCommentsDownload.classList.add('hidden');
+  commentsCountShow.textContent = maxComments;
 };
 
 const getMoreComments = (comment) => {
@@ -108,7 +106,6 @@ function closePopup() {
   document.querySelector('body').classList.remove('modal-open');
   document.removeEventListener('click', onBtnClose);
   document.removeEventListener('keydown', onPopupEscKeydown);
-  document.removeEventListener('click', checkLengthComments);
   removeComments();
   const comments = document.querySelectorAll('.social__comment');
   comments.innerHTMl = '';
@@ -117,9 +114,9 @@ function closePopup() {
   return countViewComments;
 }
 
-const openPopup = (clickTarget,photos) => {
+const openPopup = (clickTarget,arr) => {
   const clickTargetNumber = Number(clickTarget);
-  const imgId = photos.find((item) => item.id === clickTargetNumber);
+  const imgId = arr.find((item) => item.id === clickTargetNumber);
   const imgUrl = imgId.url;
   const imglikes = imgId.likes;
   const imgCommentsLength = imgId.comments.length;
@@ -142,9 +139,7 @@ const getFullSizePhoto = () => {
   pictureCollection.addEventListener('click', (evt) => {
     if (evt.target.className === 'picture__img') {
       const clickTarget = evt.target.dataset.indexNumber;
-      getData((data) =>{
-        openPopup(clickTarget,data);
-      });
+      openPopup(clickTarget,photos);
     }
   });
 };
