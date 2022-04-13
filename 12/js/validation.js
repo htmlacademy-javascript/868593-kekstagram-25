@@ -15,44 +15,42 @@ const checkHashTagFieldEmpty = () => {
   }
 };
 
-function getHashTags() {
+const getHashTags = () => {
   const hashTagsString = hashTagsField.value.toUpperCase();
   const hashTag = hashTagsString.split(' ');
   return hashTag;
-}
+};
 
-function validateCountHashTags(arr ,maxCount) {
-  return arr.length <= maxCount;
-}
+const validateCountHashTags = (arr, maxCount) => arr.length <= maxCount;
 
-function validateHashTagsElementLength(arr) {
+const validateHashTagsElementLength = (arr) => {
   const arrLength = arr.map((a) => a.length);
   return arrLength.some((x) => x < MAX_LENGTH_HASHTAG);
-}
+};
 
-function validateHashTagsRegex(arr) {
+const validateHashTagsRegex = (arr) => {
   for (let i = 0; i < arr.length; i++) {
     if (!REGEX_HASHTAG.test(arr[i])) {
       return false;
     }
   }
   return true;
-}
+};
 
-function validHashTagsDubllicate(array) {
-  const uniqueHashTags = array.filter((val,ind,arr) => arr.indexOf(val) === ind);
+const validHashTagsDubllicate = (array) => {
+  const uniqueHashTags = array.filter((val, ind, arr) => arr.indexOf(val) === ind);
   return uniqueHashTags.length === array.length;
-}
+};
 
-function testValidate() {
+const testValidate = () => {
   const hashTags = getHashTags();
-  if (validateCountHashTags(hashTags,MAX_QUANTITY_HASHTAGS) && validateHashTagsRegex(hashTags) && validHashTagsDubllicate(hashTags) && validateHashTagsElementLength(hashTags) || checkHashTagFieldEmpty()) {
+  if (validateCountHashTags(hashTags, MAX_QUANTITY_HASHTAGS) && validateHashTagsRegex(hashTags) && validHashTagsDubllicate(hashTags) && validateHashTagsElementLength(hashTags) || checkHashTagFieldEmpty()) {
     hashTagsField.classList.remove('error__field');
     return true;
   }
   hashTagsField.classList.add('error__field');
   return false;
-}
+};
 
 const pristine = new Pristine(formUploadPhoto, {
   classTo: 'text__hashtags-wrapper',
@@ -90,5 +88,6 @@ const setUserFormSubmit = () => {
 setUserFormSubmit();
 
 pristine.addValidator(hashTagsField, testValidate,'не валидный хештег');
+
 export{setUserFormSubmit};
 

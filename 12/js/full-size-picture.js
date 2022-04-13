@@ -1,5 +1,5 @@
 import {removeComments,isEscapeKey} from './util.js';
-import {getData} from './api.js';
+import {photos} from './miniature.js';
 
 const STEP_DOWNLOAD_COMMENTS = 5;
 
@@ -7,23 +7,26 @@ const fullSizePicture = document.querySelector('.big-picture');
 const pictureCollection = document.querySelector('.pictures');
 const commentListFragment = document.createDocumentFragment();
 const closeButton = document.querySelector('.big-picture__cancel');
-let maxComments = 4;
+let maxComments = STEP_DOWNLOAD_COMMENTS - 1;
 let countViewComments;
-
+const btnCommentsDownloadWrapper = document.querySelector('.social__comments-loader-wrapper');
+let btnCommentsDownload = document.querySelector('.comments-loader');
 
 const createBtnDownloadComments = () => {
-  let btnCommentsDownload = document.querySelector('.comments-loader');
-  const btnCommentsDownloadWrapper = document.querySelector('.social__comments-loader-wrapper');
-  btnCommentsDownload = document.createElement('button');
-  btnCommentsDownload.classList.add('social__comments-loader');
-  btnCommentsDownload.classList.add('comments-loader');
-  btnCommentsDownload.textContent = 'Загрузить еще';
-  btnCommentsDownloadWrapper.append(btnCommentsDownload);
+  if (!btnCommentsDownload) {
+    btnCommentsDownload = document.createElement('button');
+    btnCommentsDownload.classList.add('social__comments-loader');
+    btnCommentsDownload.classList.add('comments-loader');
+    btnCommentsDownload.textContent = 'Загрузить еще';
+    btnCommentsDownloadWrapper.append(btnCommentsDownload);
+  }
 };
 
 const destroyBtnDownloadComments = () => {
-  const btnCommentsDownload = document.querySelector('.comments-loader');
-  btnCommentsDownload.remove();
+  if (btnCommentsDownload) {
+    btnCommentsDownload.remove();
+    btnCommentsDownload = null;
+  }
 };
 
 const createCommentElement = (comment) => {
@@ -45,7 +48,6 @@ const createCommentList = (comment,min,max) => {
   createBtnDownloadComments();
   const commentCountMax = document.querySelector('.comments-count');
   const commentsCountShow = document.querySelector('.comments-count-show');
-  const btnCommentsDownload = document.querySelector('.comments-loader');
   if(max > comment.comments.length) {
     max = comment.comments.length;
     btnCommentsDownload.classList.add('hidden');
@@ -73,21 +75,19 @@ const checkLengthComments = (comment) => {
     commentsCountShow.textContent = maxComments;
     return countViewComments;
   }
-  else {
-    const restComments = comment.comments.length - countViewComments;
-    maxComments = countViewComments + restComments;
-    createCommentList(comment,countViewComments,maxComments);
-    const btnCommentsDownload = document.querySelector('.comments-loader');
-    btnCommentsDownload.classList.add('hidden');
-    commentsCountShow.textContent = maxComments;
-  }
+  const restComments = comment.comments.length - countViewComments;
+  maxComments = countViewComments + restComments;
+  createCommentList(comment,countViewComments,maxComments);
+  btnCommentsDownload.classList.add('hidden');
+  commentsCountShow.textContent = maxComments;
 };
 
 const getMoreComments = (comment) => {
-  const btnCommentsDownload = document.querySelector('.comments-loader');
-  btnCommentsDownload.addEventListener('click', () => {
-    checkLengthComments(comment);
-  });
+  if (btnCommentsDownload) {
+    btnCommentsDownload.addEventListener('click', () => {
+      checkLengthComments(comment);
+    });
+  }
 };
 
 const onPopupEscKeydown = (evt) =>  {
@@ -106,7 +106,6 @@ function closePopup() {
   document.querySelector('body').classList.remove('modal-open');
   document.removeEventListener('click', onBtnClose);
   document.removeEventListener('keydown', onPopupEscKeydown);
-  document.removeEventListener('click', checkLengthComments);
   removeComments();
   const comments = document.querySelectorAll('.social__comment');
   comments.innerHTMl = '';
@@ -115,9 +114,9 @@ function closePopup() {
   return countViewComments;
 }
 
-const openPopup = (clickTarget,photos) => {
+const openPopup = (clickTarget,arr) => {
   const clickTargetNumber = Number(clickTarget);
-  const imgId = photos.find((item) => item.id === clickTargetNumber);
+  const imgId = arr.find((item) => item.id === clickTargetNumber);
   const imgUrl = imgId.url;
   const imglikes = imgId.likes;
   const imgCommentsLength = imgId.comments.length;
@@ -127,7 +126,7 @@ const openPopup = (clickTarget,photos) => {
   fullSizePicture.querySelector('.comments-count').textContent = imgCommentsLength;
   fullSizePicture.querySelector('.social__caption').textContent = imgDescription;
   fullSizePicture.classList.remove('hidden');
-  destroyBtnDownloadComments();
+  createBtnDownloadComments();
   document.querySelector('body').classList.add('modal-open');
   createCommentList(imgId,0,STEP_DOWNLOAD_COMMENTS);
   getMoreComments(imgId);
@@ -140,12 +139,9 @@ const getFullSizePhoto = () => {
   pictureCollection.addEventListener('click', (evt) => {
     if (evt.target.className === 'picture__img') {
       const clickTarget = evt.target.dataset.indexNumber;
-      getData((data) =>{
-        openPopup(clickTarget,data);
-      });
+      openPopup(clickTarget,photos);
     }
   });
 };
 
 getFullSizePhoto();
-
