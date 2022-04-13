@@ -7,23 +7,26 @@ const fullSizePicture = document.querySelector('.big-picture');
 const pictureCollection = document.querySelector('.pictures');
 const commentListFragment = document.createDocumentFragment();
 const closeButton = document.querySelector('.big-picture__cancel');
-let maxComments = 4;
+let maxComments = STEP_DOWNLOAD_COMMENTS - 1;
 let countViewComments;
-
+const btnCommentsDownloadWrapper = document.querySelector('.social__comments-loader-wrapper');
+let btnCommentsDownload = document.querySelector('.comments-loader');
 
 const createBtnDownloadComments = () => {
-  let btnCommentsDownload = document.querySelector('.comments-loader');
-  const btnCommentsDownloadWrapper = document.querySelector('.social__comments-loader-wrapper');
-  btnCommentsDownload = document.createElement('button');
-  btnCommentsDownload.classList.add('social__comments-loader');
-  btnCommentsDownload.classList.add('comments-loader');
-  btnCommentsDownload.textContent = 'Загрузить еще';
-  btnCommentsDownloadWrapper.append(btnCommentsDownload);
+  if (!btnCommentsDownload) {
+    btnCommentsDownload = document.createElement('button');
+    btnCommentsDownload.classList.add('social__comments-loader');
+    btnCommentsDownload.classList.add('comments-loader');
+    btnCommentsDownload.textContent = 'Загрузить еще';
+    btnCommentsDownloadWrapper.append(btnCommentsDownload);
+  }
 };
 
 const destroyBtnDownloadComments = () => {
-  const btnCommentsDownload = document.querySelector('.comments-loader');
-  btnCommentsDownload.remove();
+  if (btnCommentsDownload) {
+    btnCommentsDownload.remove();
+    btnCommentsDownload = null;
+  }
 };
 
 const createCommentElement = (comment) => {
@@ -45,7 +48,6 @@ const createCommentList = (comment,min,max) => {
   createBtnDownloadComments();
   const commentCountMax = document.querySelector('.comments-count');
   const commentsCountShow = document.querySelector('.comments-count-show');
-  const btnCommentsDownload = document.querySelector('.comments-loader');
   if(max > comment.comments.length) {
     max = comment.comments.length;
     btnCommentsDownload.classList.add('hidden');
@@ -77,17 +79,17 @@ const checkLengthComments = (comment) => {
     const restComments = comment.comments.length - countViewComments;
     maxComments = countViewComments + restComments;
     createCommentList(comment,countViewComments,maxComments);
-    const btnCommentsDownload = document.querySelector('.comments-loader');
     btnCommentsDownload.classList.add('hidden');
     commentsCountShow.textContent = maxComments;
   }
 };
 
 const getMoreComments = (comment) => {
-  const btnCommentsDownload = document.querySelector('.comments-loader');
-  btnCommentsDownload.addEventListener('click', () => {
-    checkLengthComments(comment);
-  });
+  if (btnCommentsDownload) {
+    btnCommentsDownload.addEventListener('click', () => {
+      checkLengthComments(comment);
+    });
+  }
 };
 
 const onPopupEscKeydown = (evt) =>  {
@@ -127,7 +129,7 @@ const openPopup = (clickTarget,photos) => {
   fullSizePicture.querySelector('.comments-count').textContent = imgCommentsLength;
   fullSizePicture.querySelector('.social__caption').textContent = imgDescription;
   fullSizePicture.classList.remove('hidden');
-  destroyBtnDownloadComments();
+  createBtnDownloadComments();
   document.querySelector('body').classList.add('modal-open');
   createCommentList(imgId,0,STEP_DOWNLOAD_COMMENTS);
   getMoreComments(imgId);
@@ -148,4 +150,3 @@ const getFullSizePhoto = () => {
 };
 
 getFullSizePhoto();
-
