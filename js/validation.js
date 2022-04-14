@@ -89,5 +89,5 @@ setUserFormSubmit();
 
 pristine.addValidator(hashTagsField, testValidate, 'не валидный хештег');
 
-export{setUserFormSubmit};
+export{ setUserFormSubmit };
 

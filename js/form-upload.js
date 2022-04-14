@@ -156,4 +156,4 @@ fileChooser.addEventListener('change', () => {
   }
 });
 
-export { closePopupOverlay,resetForm };
+export { closePopupOverlay, resetForm };
