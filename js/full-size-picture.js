@@ -67,7 +67,7 @@ const createCommentList = (comment, min, max) => {
 };
 
 const checkLengthComments = (comment) => {
-  countViewComments = countViewComments +1;
+  countViewComments = countViewComments + 1;
   const commentsCountShow = document.querySelector('.comments-count-show');
   if(comment.comments.length > countViewComments + STEP_DOWNLOAD_COMMENTS) {
     maxComments = countViewComments + STEP_DOWNLOAD_COMMENTS;
@@ -104,12 +104,12 @@ const onBtnClose = () => {
 function closePopup() {
   fullSizePicture.classList.add('hidden');
   document.querySelector('body').classList.remove('modal-open');
-  document.removeEventListener('click', onBtnClose);
+  closeButton.removeEventListener('click', onBtnClose);
   document.removeEventListener('keydown', onPopupEscKeydown);
   removeComments();
   const comments = document.querySelectorAll('.social__comment');
   comments.innerHTMl = '';
-  countViewComments = STEP_DOWNLOAD_COMMENTS-1;
+  countViewComments = STEP_DOWNLOAD_COMMENTS - 1;
   destroyBtnDownloadComments();
   return countViewComments;
 }
